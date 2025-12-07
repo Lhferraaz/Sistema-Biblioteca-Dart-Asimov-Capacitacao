@@ -18,7 +18,7 @@ class Emprestimo {
 }
 
 // Classe Item
-class Item {
+abstract class Item {
   // Atributos da Super
   String titulo;
   int anoPublicacao;
@@ -63,6 +63,31 @@ class Item {
 
   // Função de devolução, possuí uma variável que pode ser nula de simulacao 
   // para que eu possa inserir uma data de teste.
+  // Método abstrato pois na listagem das informações, cada classe filha tem
+  // infos diferentes
+  String exibirDetalhes();
+
+  void devolver(int IdEmp, DateTime? simulacao);
+}
+
+class Livro extends Item {
+  String autor;
+  int isbn;
+
+  Livro(this.autor, this.isbn, super.titulo, super.anoPublicacao, super.quantidadeEstoque):
+    assert(autor.isNotEmpty, 'Autor não pode ser vazio');
+
+  String exibirDetalhes(){
+    String text = '''
+    Título: $titulo
+    Ano de Publicação: $anoPublicacao
+    Autor: $autor
+    ISBN: $isbn
+    ''';
+
+    return text;
+  }
+
   void devolver(int IdEmp, DateTime? simulacao) { 
     if (!historicoEmprestimos.containsKey(IdEmp)){
       print('Id inválido inserido');
@@ -77,6 +102,8 @@ class Item {
       Duration diferenca = emprestimo.dataRetirada.difference(dataDevol);
 
       int dias = diferenca.inDays;
+
+      print(exibirDetalhes());
 
       print('A data de devolução superou o prazo original em $dias dias');
       double multa = dias * 2.5;
@@ -94,23 +121,4 @@ class Item {
 
     return;
   }
-
-  String exibirDetalhes() {
-    String text = '''
-    Título: $titulo
-    Ano de Publicação: $anoPublicacao
-    Quantidade em Estoque: $quantidadeEstoque
-    ''';
-    return text;
-  }
-}
-
-class Livro extends Item {
-  String autor;
-  int isbn;
-
-  Livro(this.autor, this.isbn, super.titulo, super.anoPublicacao, super.quantidadeEstoque):
-    assert(autor.isNotEmpty, 'Autor não pode ser vazio');
-
-
 }
