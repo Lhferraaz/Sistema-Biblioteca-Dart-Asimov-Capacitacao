@@ -5,21 +5,21 @@
 
 // Classe de Empréstimo
 class Emprestimo{
-  // Declaração dos atributos
+  // Atributos
   int idEmp;
-  DateTime dataRetirada; // Tipo DateTime
-  DateTime? dataDevolucao; // Tipo DateTime
+  DateTime dataRetirada;
+  DateTime? dataDevolucao;
   String status;
 
   // Construtor + Validações
   Emprestimo({required this.idEmp, required this.dataRetirada, this.status = 'Ativo'}):
-    // Defino a data de devolução para 7 dias após a retirada
+    // Livro deve ser devolvido após 7 dias
     dataDevolucao = dataRetirada.add(Duration(days: 7));
 }
 
 // Classe Item
 class Item{
-  // Declaração dos atributos da super
+  // Atributos da Super
   String titulo;
   int anoPublicacao;
   int quantidadeEstoque;
@@ -46,18 +46,32 @@ class Item{
     DateTime dataRetirada = DateTime.now();
     int idEmp = id;
 
-    // Crio o novo objeto do tipo Empréstimo
+    // Esse bloco de código possuí o seguinte funcionamento:
+    // * Primeiro crio um novo objeto da classe Emprestimo.
+    // * Com o objeto da classe Emprestimo criada, pego o idEmp e adiciono ele
+    // como uma key no meu mapa de historico de empréstimos.
+    // * Depois atribuo a essa key o valor novoEmprestimo, assim cada id corresponde
+    // corretamente ao emprestimo atrelado a ele.
+    // Isso facilita gerenciar cenários aonde mais de uma cópia do mesmo livro é
+    // emprestada. Também incremento o id, para que cada um seja único.
     var novoEmprestimo = Emprestimo(idEmp: idEmp, dataRetirada: dataRetirada);
     id++;
-    // Atrelo ao idEmp o próprio novoEmprestimo
     historicoEmprestimos[idEmp] = novoEmprestimo;
-
-    // Retorno id para devolução
     return idEmp;
   }
 
-  void devolver(){
-    // Implementar
+  void devolver(int IdEmp){
+    if (!historicoEmprestimos.containsKey(IdEmp)){
+      print('Id inválido inserido');
+      return;
+    }
+
+    var emprestimo = historicoEmprestimos[IdEmp];
+    DateTime dataDevol = DateTime.now();
+
+    if (dataDevol.isAfter(emprestimo.dataDevolucao)){
+
+    }
   }
 
   String exibirDetalhes(){
@@ -77,6 +91,5 @@ class Livro extends Item{
   Livro(this.autor, this.isbn, super.titulo, super.anoPublicacao, super.quantidadeEstoque):
     assert(autor.isNotEmpty, 'Autor não pode ser vazio');
 
-  
 
 }
