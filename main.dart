@@ -3,27 +3,6 @@
 // Autor: Luiz Henrique Ferraz Amaro
 // Data: 03/12/2025
 
-class ProvedorTempo {
-  static DateTime? _dataAlteravel;
-
-  static void alterarDataParaTeste(DateTime data) {
-    _dataAlteravel = data;
-  }
-
-  static DateTime getHora(){
-    if (_dataAlteravel != null) {
-      return _dataAlteravel!;
-    }
-
-    return DateTime.now();
-  }
-
-  static void reset() {
-    _dataAlteravel = null;
-  }
-
-}
-
 // Classe de Empréstimo
 class Emprestimo {
   // Atributos
@@ -51,7 +30,7 @@ class Item {
   Item(this.titulo, this.anoPublicacao, this.quantidadeEstoque):
     assert(quantidadeEstoque >= 0, 'Quantidade em estoque deve ser menor ou igul a 0'),
     assert(titulo.isNotEmpty, 'O Título não pode ser vazio'),
-    assert(anoPublicacao > 0 && anoPublicacao < ProvedorTempo.getHora().year, 'Ano de publicação inválido');
+    assert(anoPublicacao > 0 && anoPublicacao < DateTime.now().year, 'Ano de publicação inválido');
 
   // Método de empréstimo de livros
   int emprestar() {
@@ -64,7 +43,7 @@ class Item {
     quantidadeEstoque--;
 
     // Variáveis para criação do empréstimo
-    DateTime dataRetirada = ProvedorTempo.getHora();
+    DateTime dataRetirada = DateTime.now();
     int idEmp = id;
 
     // Esse bloco de código possuí o seguinte funcionamento:
@@ -78,20 +57,28 @@ class Item {
     var novoEmprestimo = Emprestimo(idEmp: idEmp, dataRetirada: dataRetirada);
     id++;
     historicoEmprestimos[idEmp] = novoEmprestimo;
+
     return idEmp;
   }
 
-  void devolver(int IdEmp) {
+  // Função de devolução, possuí uma variável que pode ser nula de simulacao 
+  // para que eu possa inserir uma data de teste.
+  void devolver(int IdEmp, DateTime? simulacao) { 
     if (!historicoEmprestimos.containsKey(IdEmp)){
       print('Id inválido inserido');
       return;
     }
 
     var emprestimo = historicoEmprestimos[IdEmp]!;
-    DateTime dataDevol = DateTime.now();
+    
+    DateTime dataDevol = simulacao ?? DateTime.now();
 
     if (dataDevol.isAfter(emprestimo.dataPrazoFinal)){
+      Duration diferenca = emprestimo.dataRetirada.difference(dataDevol);
 
+      int dias = diferenca.inDays;
+
+      print('A data de devolução superou o prazo original em $dias dias')
     }
   }
 
