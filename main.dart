@@ -90,6 +90,8 @@ class Item {
     int total = 15;
     print('Valor total devido: $total');
 
+    quantidadeEstoque++;
+
     return;
   }
 
