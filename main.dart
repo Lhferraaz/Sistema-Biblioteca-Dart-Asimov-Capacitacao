@@ -30,7 +30,7 @@ abstract class Item {
   Item(this.titulo, this.anoPublicacao, this.quantidadeEstoque):
     assert(quantidadeEstoque >= 0, 'Quantidade em estoque deve ser menor ou igul a 0'),
     assert(titulo.isNotEmpty, 'O Título não pode ser vazio'),
-    assert(anoPublicacao > 0 && anoPublicacao < DateTime.now().year, 'Ano de publicação inválido');
+    assert(anoPublicacao > 0 && anoPublicacao <= DateTime.now().year, 'Ano de publicação inválido');
 
   // Método de empréstimo de livros
   int emprestar() {
@@ -80,7 +80,7 @@ class Livro extends Item {
   String exibirDetalhes(){
     String text = '''
     Título: $titulo
-    Ano de Publicação: $anoPublicacao
+    Ano de publicação: $anoPublicacao
     Autor: $autor
     ISBN: $isbn
     ''';
@@ -95,6 +95,8 @@ class Livro extends Item {
     }
 
     var emprestimo = historicoEmprestimos[IdEmp]!;
+
+    print(exibirDetalhes());
     
     DateTime dataDevol = simulacao ?? DateTime.now();
 
@@ -102,8 +104,6 @@ class Livro extends Item {
       Duration diferenca = emprestimo.dataRetirada.difference(dataDevol);
 
       int dias = diferenca.inDays;
-
-      print(exibirDetalhes());
 
       print('A data de devolução superou o prazo original em $dias dias');
       double multa = dias * 2.5;
@@ -121,4 +121,66 @@ class Livro extends Item {
 
     return;
   }
+}
+
+class Revista extends Item {
+  int numExibicao;
+  String mesPublicacao;
+
+  Revista(this.numExibicao, this.mesPublicacao, super.titulo, super.anoPublicacao, super.quantidadeEstoque);
+
+  String exibirDetalhes(){
+    String text = '''
+Título: $titulo
+Ano de publicação: $anoPublicacao
+N° de exibição: $numExibicao
+Mês de publicação: $mesPublicacao
+    ''';
+
+    return text;
+  }
+
+  void devolver(int IdEmp, DateTime? simulacao) { 
+    if (!historicoEmprestimos.containsKey(IdEmp)){
+      print('Id inválido inserido');
+      return;
+    }
+
+    var emprestimo = historicoEmprestimos[IdEmp]!;
+
+    print(exibirDetalhes());
+    
+    DateTime dataDevol = simulacao ?? DateTime.now();
+
+    if (dataDevol.isAfter(emprestimo.dataPrazoFinal)){
+      Duration diferenca = emprestimo.dataRetirada.difference(dataDevol);
+
+      int dias = diferenca.inDays;
+
+      print('A data de devolução superou o prazo original em $dias dias');
+      double multa = dias * 2.5;
+      print('Valor da multa por atraso: $multa');
+      double total = multa + 15;
+      print('Valor total devido: $total');
+      return;
+    }
+
+    print('O prazo de devolução está em dia.');
+    int total = 15;
+    print('Valor total devido: $total');
+
+    quantidadeEstoque++;
+
+    return;
+  }
+}
+
+void main() {
+  var livro1 = Livro('Luiz', 123123, 'Entrega Asimov', 2025 , 5);
+
+  String text = livro1.exibirDetalhes();
+
+  var emprestar = livro1.emprestar();
+
+  livro1.devolver(emprestar, null);
 }
