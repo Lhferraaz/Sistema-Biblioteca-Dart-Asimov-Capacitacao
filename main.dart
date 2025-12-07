@@ -8,13 +8,14 @@ class Emprestimo{
   // Atributos
   int idEmp;
   DateTime dataRetirada;
+  DateTime dataPrazoFinal;
   DateTime? dataDevolucao;
   String status;
 
   // Construtor + Validações
   Emprestimo({required this.idEmp, required this.dataRetirada, this.status = 'Ativo'}):
     // Livro deve ser devolvido após 7 dias
-    dataDevolucao = dataRetirada.add(Duration(days: 7));
+    dataPrazoFinal = dataRetirada.add(Duration(days: 7));
 }
 
 // Classe Item
