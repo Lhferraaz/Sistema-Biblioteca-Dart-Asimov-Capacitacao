@@ -3,8 +3,29 @@
 // Autor: Luiz Henrique Ferraz Amaro
 // Data: 03/12/2025
 
+class ProvedorTempo {
+  static DateTime? _dataAlteravel;
+
+  static void alterarDataParaTeste(DateTime data) {
+    _dataAlteravel = data;
+  }
+
+  static DateTime getHora(){
+    if (_dataAlteravel != null) {
+      return _dataAlteravel!;
+    }
+
+    return DateTime.now();
+  }
+
+  static void reset() {
+    _dataAlteravel = null;
+  }
+
+}
+
 // Classe de Empréstimo
-class Emprestimo{
+class Emprestimo {
   // Atributos
   int idEmp;
   DateTime dataRetirada;
@@ -14,12 +35,11 @@ class Emprestimo{
 
   // Construtor + Validações
   Emprestimo({required this.idEmp, required this.dataRetirada, this.status = 'Ativo'}):
-    // Livro deve ser devolvido após 7 dias
     dataPrazoFinal = dataRetirada.add(Duration(days: 7));
 }
 
 // Classe Item
-class Item{
+class Item {
   // Atributos da Super
   String titulo;
   int anoPublicacao;
@@ -31,12 +51,12 @@ class Item{
   Item(this.titulo, this.anoPublicacao, this.quantidadeEstoque):
     assert(quantidadeEstoque >= 0, 'Quantidade em estoque deve ser menor ou igul a 0'),
     assert(titulo.isNotEmpty, 'O Título não pode ser vazio'),
-    assert(anoPublicacao > 0 && anoPublicacao < DateTime.now().year, 'Ano de publicação inválido');
+    assert(anoPublicacao > 0 && anoPublicacao < ProvedorTempo.getHora().year, 'Ano de publicação inválido');
 
   // Método de empréstimo de livros
-  int emprestar(){
+  int emprestar() {
     // Validação com exception
-    if (quantidadeEstoque <= 0){
+    if (quantidadeEstoque <= 0) {
       throw Exception('Empréstimo indisponível. Não há cópias em estoque');
     }
 
@@ -44,7 +64,7 @@ class Item{
     quantidadeEstoque--;
 
     // Variáveis para criação do empréstimo
-    DateTime dataRetirada = DateTime.now();
+    DateTime dataRetirada = ProvedorTempo.getHora();
     int idEmp = id;
 
     // Esse bloco de código possuí o seguinte funcionamento:
@@ -61,21 +81,21 @@ class Item{
     return idEmp;
   }
 
-  void devolver(int IdEmp){
+  void devolver(int IdEmp) {
     if (!historicoEmprestimos.containsKey(IdEmp)){
       print('Id inválido inserido');
       return;
     }
 
-    var emprestimo = historicoEmprestimos[IdEmp];
+    var emprestimo = historicoEmprestimos[IdEmp]!;
     DateTime dataDevol = DateTime.now();
 
-    if (dataDevol.isAfter(emprestimo.dataDevolucao)){
+    if (dataDevol.isAfter(emprestimo.dataPrazoFinal)){
 
     }
   }
 
-  String exibirDetalhes(){
+  String exibirDetalhes() {
     String text = '''
     Título: $titulo
     Ano de Publicação: $anoPublicacao
@@ -85,7 +105,7 @@ class Item{
   }
 }
 
-class Livro extends Item{
+class Livro extends Item {
   String autor;
   int isbn;
 
