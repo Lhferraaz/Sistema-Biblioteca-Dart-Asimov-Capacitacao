@@ -22,11 +22,13 @@ class Item{
     print('Devolução realizada: $titulo');
   }
 
-  void exibirDetalhes(){
+  String exibirDetalhes(){
     String text = '''
 Título: $titulo
 Ano de Publicação: $anoPublicacao
 Quantidade em Estoque: $quantidadeEstoque
 ''';
+
+  return text;
   }
 }
