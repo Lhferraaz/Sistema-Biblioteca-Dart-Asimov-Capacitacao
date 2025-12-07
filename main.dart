@@ -78,8 +78,19 @@ class Item {
 
       int dias = diferenca.inDays;
 
-      print('A data de devolução superou o prazo original em $dias dias')
+      print('A data de devolução superou o prazo original em $dias dias');
+      double multa = dias * 2.5;
+      print('Valor da multa por atraso: $multa');
+      double total = multa + 15;
+      print('Valor total devido: $total');
+      return;
     }
+
+    print('O prazo de devolução está em dia.');
+    int total = 15;
+    print('Valor total devido: $total');
+
+    return;
   }
 
   String exibirDetalhes() {
