@@ -3,6 +3,27 @@
 // Autor: Luiz Henrique Ferraz Amaro
 // Data: 03/12/2025
 
+bool verificaIsbn(List<int> isbn) {
+  if (isbn.length != 13) return false;
+
+  int tam = isbn.length;
+  int soma = 0;
+
+  for (int i = 0; i < tam; i++) {
+    if (i % 2 == 0) {
+      soma += isbn[i] * 1;
+    }else {
+      soma += isbn[i] * 3;
+    }
+  }
+
+  if (soma % 10 == 0) {
+    return true;
+  }
+  
+  return false;
+}
+
 // Classe de Empréstimo
 class Emprestimo {
   // Atributos
