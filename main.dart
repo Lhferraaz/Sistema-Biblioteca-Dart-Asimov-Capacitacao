@@ -6,21 +6,22 @@
 bool verificaIsbn(List<int> isbn) {
   if (isbn.length != 13) return false;
 
-  int tam = isbn.length;
   int soma = 0;
 
-  for (int i = 0; i < tam; i++) {
-    if (i % 2 == 0) {
-      soma += isbn[i] * 1;
+  for (int i = 0; i < 12; i++) {
+    if (i.isEven) {
+      soma += isbn[i];
     }else {
       soma += isbn[i] * 3;
     }
   }
 
-  if (soma % 10 == 0) {
+  int digitoVerificador = (10 - (soma % 10)) % 10;
+
+  if (digitoVerificador == isbn[12]) {
     return true;
   }
-  
+
   return false;
 }
 
@@ -51,7 +52,19 @@ abstract class Item {
   Item(this.titulo, this.anoPublicacao, this.quantidadeEstoque):
     assert(quantidadeEstoque >= 0, 'Quantidade em estoque deve ser menor ou igul a 0'),
     assert(titulo.isNotEmpty, 'O Título não pode ser vazio'),
-    assert(anoPublicacao > 0 && anoPublicacao <= DateTime.now().year, 'Ano de publicação inválido');
+    assert(anoPublicacao > 0 && anoPublicacao <= DateTime.now().year, 'Ano de publicação inválido') {
+      if (quantidadeEstoque <= 0) {
+        throw Exception('A quantidade não pode ser menor que 0!');
+      }
+
+      if (titulo.isEmpty) {
+        throw Exception('O Título não pode estar vazio!');
+      }
+
+      if (anoPublicacao <= 0 || anoPublicacao > DateTime.now().year) {
+        throw Exception('Ano de publicação inválido!');
+      }
+    }
 
   // Método de empréstimo de livros
   void emprestar(String nome) {
@@ -96,17 +109,25 @@ abstract class Item {
 
 class Livro extends Item {
   String autor;
-  int isbn;
+  List<int> isbn;
 
   Livro(this.autor, this.isbn, super.titulo, super.anoPublicacao, super.quantidadeEstoque):
-    assert(autor.isNotEmpty, 'Autor não pode ser vazio');
+    assert(autor.isNotEmpty, 'Autor não pode ser vazio') {
+      if (!verificaIsbn(isbn)) {
+        throw Exception('ISBN inválido inserido!');
+      }
+
+      if (autor.isEmpty) {
+        throw Exception('Autor não pode ser vazio! - Se for desconhecido, informe.');
+      }
+    }
 
   String exibirDetalhes(){
     String text = '''
 Título: $titulo
 Ano de publicação: $anoPublicacao
 Autor: $autor
-ISBN: $isbn
+ISBN: ${isbn.join()}
     ''';
 
     return text;
@@ -160,7 +181,16 @@ class Revista extends Item {
   int numExibicao;
   String mesPublicacao;
 
-  Revista(this.numExibicao, this.mesPublicacao, super.titulo, super.anoPublicacao, super.quantidadeEstoque);
+  Revista(this.numExibicao, this.mesPublicacao, super.titulo, super.anoPublicacao, super.quantidadeEstoque):
+    assert(numExibicao > 0, 'Número de exibição deve ser maior que 0') {
+      if (numExibicao <= 0) {
+        throw Exception('Número de exibição inválido inserido!');
+      }
+
+      if (mesPublicacao.isEmpty) {
+        throw Exception('Mês de publicação não pode estar vazio!');
+      }
+    }
 
   String exibirDetalhes(){
     String text = '''
@@ -215,12 +245,9 @@ Mês de publicação: $mesPublicacao
 }
 
 void main() {
-  var livro1 = Livro('Luiz', 123123, 'Entrega Asimov', 2025 , 5);
-  livro1.emprestar('Luiz Henrique Ferraz Amaro');
-  DateTime simulacao = DateTime.now().add(Duration(days: 10));
-  livro1.devolver('Luiz Henrique Ferraz Amaro', simulacao);
+  var isbnLivro1 = [9, 7, 8, 8, 5, 0, 3, 0, 0, 9, 9, 7, 3];
+  var livro1 = Livro('Luiz', isbnLivro1, 'Entrega Asimov', 2025 , 5);
 
-  var revista1 = Revista(1, 'Setembro', 'Revista Veja', 2024, 2);
-  revista1.emprestar('Luiz Henrique Ferraz Amaro');
-  revista1.devolver('Luiz Henrique Ferraz Amaro', null);
+  print(livro1.exibirDetalhes());
+  print(verificaIsbn(isbnLivro1));
 }
