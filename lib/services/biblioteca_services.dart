@@ -91,3 +91,27 @@ void emprestarItem(List<Item> biblioteca) {
 
   item.emprestar(nomeCliente);
 }
+
+void devolverItem(List<Item> biblioteca) {
+  stdout.write('Título do item a ser devolvido: ');
+  String? titulo = stdin.readLineSync()!;
+
+  Item? item;
+
+  for (var i in biblioteca) {
+    if (i.titulo == titulo) {
+      item = i;
+      break;
+    }
+  }
+
+  if (item == null) {
+    print('Item não encontrado.\n');
+    return;
+  }
+
+  stdout.write('Nome do cliente: ');
+  String? nomeCliente = stdin.readLineSync()!;
+  
+  item.devolver(nomeCliente, null);
+}
