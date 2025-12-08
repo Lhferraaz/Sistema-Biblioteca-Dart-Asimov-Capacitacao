@@ -3,6 +3,8 @@
 // Descrição: Sistema de Biblioteca em Dart - Validação de ISBN e gerenciamento de empréstimos
 // Capacitação da Asimov - Módulo Dart
 
+import 'dart:io';
+
 // Função para verificar a validade do ISBN-13
 bool verificaIsbn(List<int> isbn) {
   // Verifica se o comprimento do ISBN é 13
@@ -105,11 +107,6 @@ abstract class Item {
   set setQuantidadeEstoque(int v) {
     if (v < 0) throw Exception('Quantidade inválida');
     quantidadeEstoque = v;
-  }
-
-  set setId(int v) {
-    if (v < 0) throw Exception('Id inválido');
-    id = v;
   }
 
   set setHistorico(Map<String, Emprestimo> v) {
@@ -344,10 +341,79 @@ void excluirItem(List<Item> biblioteca, Item exclusao) {
   print('Item excluído com sucesso da biblioteca.');
 }
 
-void main() {
-  var isbnLivro1 = [9, 7, 8, 8, 5, 0, 3, 0, 0, 9, 9, 7, 3];
-  var livro1 = Livro('Luiz', isbnLivro1, 'Entrega Asimov', 2025, 5);
+void insereLivro(List<Item> biblioteca) {
+  print('Inserção de novo livro na biblioteca:');
 
-  print(livro1.exibirDetalhes());
-  print(verificaIsbn(isbnLivro1));
+  stdout.write('Livro / Revista: ');
+  String? tipo = stdin.readLineSync();
+
+  switch (tipo!.trim().toLowerCase()) {
+    case 'livro':
+      stdout.write('Título: ');
+      String? titulo = stdin.readLineSync();
+
+      stdout.write('Ano de publicação: ');
+      int anoPub = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Quantidade em estoque: ');
+      int qtdEstoque = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Autor: ');
+      String? autor = stdin.readLineSync();
+
+      stdout.write('ISBN (13 dígitos, sem espaços): ');
+      String? isbnInput = stdin.readLineSync();
+      List<int> isbn = isbnInput!.split('').map(int.parse).toList();
+
+      var novoLivro = Livro(autor!, isbn, titulo!, anoPub, qtdEstoque);
+      biblioteca.add(novoLivro);
+      print('Livro inserido com sucesso na biblioteca.');
+      break;
+
+    case 'revista':
+      stdout.write('Título: ');
+      String? tituloRevista = stdin.readLineSync();
+
+      stdout.write('Ano de publicação: ');
+      int anoPubRevista = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Quantidade em estoque: ');
+      int qtdEstoqueRevista = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Número de exibição: ');
+      int numExibicao = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Mês de publicação: ');
+      String? mesPublicacao = stdin.readLineSync();
+
+      var novaRevista = Revista(numExibicao, mesPublicacao!, tituloRevista!, anoPubRevista, qtdEstoqueRevista);
+      biblioteca.add(novaRevista);
+      print('Revista inserida com sucesso na biblioteca.');
+      break;
+  }
+}
+
+void main() {
+  List<Item> biblioteca = [];
+
+  var Livro1 = Livro('Autor Exemplo', [9, 7, 8, 8, 5, 7, 7, 9, 9, 5, 1, 8, 9], 'Livro Exemplo', 2020, 3);
+  biblioteca.add(Livro1);
+  var Revista1 = Revista(45, 'Janeiro', 'Revista Exemplo', 2021, 5);
+  biblioteca.add(Revista1);
+  var Livro2 = Livro('Outro Autor', [9, 7, 8, 8, 5, 6, 4, 1, 5, 8, 5, 2, 8], 'Outro Livro', 2019, 2);
+  biblioteca.add(Livro2);
+  var Revista2 = Revista(12, 'Fevereiro', 'Outra Revista', 2018, 4);
+  biblioteca.add(Revista2);
+  var Livro3 = Livro('Terceiro Autor', [9, 7, 8, 8, 5, 8, 0, 4, 5, 6, 3, 9, 4 ], 'Terceiro Livro', 2022, 1);
+  biblioteca.add(Livro3);
+  var Revista3 = Revista(30, 'Março', 'Terceira Revista', 2023, 6);
+  biblioteca.add(Revista3);
+
+  insereLivro(biblioteca);
+
+  for (var item in biblioteca) {
+    print('Detalhes do item na biblioteca:');
+    print(item.exibirDetalhes());
+    print('-----------------------\n');
+  }
 }
