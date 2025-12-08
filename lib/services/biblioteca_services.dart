@@ -67,3 +67,27 @@ void insereItem(List<Item> biblioteca) {
       print('Tipo inválido.');
   }
 }
+
+void emprestarItem(List<Item> biblioteca) {
+  stdout.write('Digite o título do item a ser emprestado: ');
+  String? titulo = stdin.readLineSync()!;
+
+  Item? item;
+
+  for (var i in biblioteca) {
+    if (i.titulo == titulo) {
+      item = i;
+      break;
+    }
+  }
+
+  if (item == null) {
+    print('Item não encontrado.\n');
+    return;
+  }
+
+  stdout.write('Digite o nome do cliente: ');
+  String? nomeCliente = stdin.readLineSync()!;
+
+  item.emprestar(nomeCliente);
+}
