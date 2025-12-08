@@ -1,0 +1,69 @@
+import 'dart:io';
+import '../models/item.dart';
+import '../models/livro.dart';
+import '../models/revista.dart';
+
+void listarItens(List<Item> biblioteca) {
+  if (biblioteca.isEmpty) {
+    print('Nenhum item cadastrado.\n');
+    return;
+  }
+
+  for (var item in biblioteca) {
+    print(item.exibirDetalhes());
+    print('----------------------');
+  }
+}
+
+void insereItem(List<Item> biblioteca) {
+  print('Inserção de novo item:');
+
+  stdout.write('Livro / Revista: ');
+  String? tipo = stdin.readLineSync()?.trim();
+
+  switch (tipo) {
+    case 'Livro':
+      stdout.write('Título: ');
+      String? titulo = stdin.readLineSync();
+
+      stdout.write('Ano de publicação: ');
+      int anoPub = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Quantidade em estoque: ');
+      int qtdEstoque = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Autor: ');
+      String? autor = stdin.readLineSync();
+
+      stdout.write('ISBN (13 dígitos, sem espaços): ');
+      String? isbnInput = stdin.readLineSync();
+      List<int> isbn = isbnInput!.split('').map(int.parse).toList();
+
+      biblioteca.add(Livro(autor!, isbn, titulo!, anoPub, qtdEstoque));
+      print('Livro inserido com sucesso.\n');
+      break;
+
+    case 'Revista':
+      stdout.write('Título: ');
+      String? tituloR = stdin.readLineSync();
+
+      stdout.write('Ano de publicação: ');
+      int ano = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Quantidade em estoque: ');
+      int qtd = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Número de exibição: ');
+      int num = int.parse(stdin.readLineSync()!);
+
+      stdout.write('Mês de publicação: ');
+      String? mes = stdin.readLineSync();
+
+      biblioteca.add(Revista(num, mes!, tituloR!, ano, qtd));
+      print('Revista inserida com sucesso.\n');
+      break;
+
+    default:
+      print('Tipo inválido.');
+  }
+}
