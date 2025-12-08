@@ -329,6 +329,21 @@ Mês de publicação: $mesPublicacao
   }
 }
 
+void excluirItem(List<Item> biblioteca, Item exclusao) {
+  if (biblioteca.length == 0) {
+    print('A biblioteca está vazia. Nenhum item para excluir.');
+    return;
+  }
+
+  if (!biblioteca.contains(exclusao)) {
+    print('Item não encontrado na biblioteca.');
+    return;
+  }
+
+  biblioteca.remove(exclusao);
+  print('Item excluído com sucesso da biblioteca.');
+}
+
 void main() {
   var isbnLivro1 = [9, 7, 8, 8, 5, 0, 3, 0, 0, 9, 9, 7, 3];
   var livro1 = Livro('Luiz', isbnLivro1, 'Entrega Asimov', 2025, 5);
