@@ -6,14 +6,14 @@
 // Classe de Empréstimo
 class Emprestimo {
   // Atributos
-  int idEmp;
+  String cliente;
   DateTime dataRetirada;
   DateTime dataPrazoFinal;
   DateTime? dataDevolucao;
   String status;
 
   // Construtor + Validações
-  Emprestimo({required this.idEmp, required this.dataRetirada, this.status = 'Ativo'}):
+  Emprestimo({required this.cliente, required this.dataRetirada, this.status = 'Ativo'}):
     dataPrazoFinal = dataRetirada.add(Duration(days: 7));
 }
 
@@ -24,7 +24,7 @@ abstract class Item {
   int anoPublicacao;
   int quantidadeEstoque;
   int id = 0;
-  Map <int, Emprestimo> historicoEmprestimos = {}; // Mapa para guardar empréstimos no tipo: id - data
+  Map <String, Emprestimo> historicoEmprestimos = {}; // Mapa para guardar empréstimos no tipo: id - data
 
   // Construtor + validações
   Item(this.titulo, this.anoPublicacao, this.quantidadeEstoque):
@@ -33,10 +33,14 @@ abstract class Item {
     assert(anoPublicacao > 0 && anoPublicacao <= DateTime.now().year, 'Ano de publicação inválido');
 
   // Método de empréstimo de livros
-  int emprestar() {
+  void emprestar(String nome) {
     // Validação com exception
     if (quantidadeEstoque <= 0) {
       throw Exception('Empréstimo indisponível. Não há cópias em estoque');
+    }
+
+    if (nome.isEmpty){
+      throw Exception('Nome não pode estar vazio');
     }
 
     // Decrementa a quantidade de cópias
@@ -44,30 +48,29 @@ abstract class Item {
 
     // Variáveis para criação do empréstimo
     DateTime dataRetirada = DateTime.now();
-    int idEmp = id;
 
     // Esse bloco de código possuí o seguinte funcionamento:
     // * Primeiro crio um novo objeto da classe Emprestimo.
-    // * Com o objeto da classe Emprestimo criada, pego o idEmp e adiciono ele
+    // * Com o objeto da classe Emprestimo criada, pego o nome e adiciono ele
     // como uma key no meu mapa de historico de empréstimos.
-    // * Depois atribuo a essa key o valor novoEmprestimo, assim cada id corresponde
+    // * Depois atribuo a essa key o valor novoEmprestimo, assim cada nome corresponde
     // corretamente ao emprestimo atrelado a ele.
     // Isso facilita gerenciar cenários aonde mais de uma cópia do mesmo livro é
     // emprestada. Também incremento o id, para que cada um seja único.
-    var novoEmprestimo = Emprestimo(idEmp: idEmp, dataRetirada: dataRetirada);
+    var novoEmprestimo = Emprestimo(cliente: nome, dataRetirada: dataRetirada);
     id++;
-    historicoEmprestimos[idEmp] = novoEmprestimo;
-
-    return idEmp;
+    historicoEmprestimos[nome] = novoEmprestimo;
+    print('\nEmpréstimo do item $titulo realizado com sucesso\n');
   }
+
+  
+  String exibirDetalhes();
 
   // Função de devolução, possuí uma variável que pode ser nula de simulacao 
   // para que eu possa inserir uma data de teste.
   // Método abstrato pois na listagem das informações, cada classe filha tem
   // infos diferentes
-  String exibirDetalhes();
-
-  void devolver(int IdEmp, DateTime? simulacao);
+  void devolver(String nome, DateTime? simulacao);
 }
 
 class Livro extends Item {
@@ -79,45 +82,54 @@ class Livro extends Item {
 
   String exibirDetalhes(){
     String text = '''
-    Título: $titulo
-    Ano de publicação: $anoPublicacao
-    Autor: $autor
-    ISBN: $isbn
+Título: $titulo
+Ano de publicação: $anoPublicacao
+Autor: $autor
+ISBN: $isbn
     ''';
 
     return text;
   }
 
-  void devolver(int IdEmp, DateTime? simulacao) { 
-    if (!historicoEmprestimos.containsKey(IdEmp)){
+  void devolver(String nome, DateTime? simulacao) { 
+    if (!historicoEmprestimos.containsKey(nome)){
       print('Id inválido inserido');
       return;
     }
 
-    var emprestimo = historicoEmprestimos[IdEmp]!;
-
+    var emprestimo = historicoEmprestimos[nome]!;
+    
+    print('Devolução do item:  $titulo: ');
+    print('Detalhes da obra: \n');
     print(exibirDetalhes());
+
+    print('-----------------------\n');
     
     DateTime dataDevol = simulacao ?? DateTime.now();
 
-    if (dataDevol.isAfter(emprestimo.dataPrazoFinal)){
-      Duration diferenca = emprestimo.dataRetirada.difference(dataDevol);
+    print('Informações sobre pagamento: \n');
 
-      int dias = diferenca.inDays;
+    if (dataDevol.isAfter(emprestimo.dataPrazoFinal)){
+      Duration diferenca = emprestimo.dataPrazoFinal.difference(dataDevol);
+
+      int dias = diferenca.inDays.abs();
 
       print('A data de devolução superou o prazo original em $dias dias');
       double multa = dias * 2.5;
       print('Valor da multa por atraso: $multa');
       double total = multa + 15;
-      print('Valor total devido: $total');
+      print('Valor total devido: $total\n');
+      print('-----------------------\n');
       return;
     }
 
     print('O prazo de devolução está em dia.');
     int total = 15;
-    print('Valor total devido: $total');
+    print('Valor total devido: $total\n');
+    print('-----------------------\n');
 
     quantidadeEstoque++;
+    historicoEmprestimos.remove(nome);
 
     return;
   }
@@ -140,22 +152,26 @@ Mês de publicação: $mesPublicacao
     return text;
   }
 
-  void devolver(int IdEmp, DateTime? simulacao) { 
-    if (!historicoEmprestimos.containsKey(IdEmp)){
+  void devolver(String nome, DateTime? simulacao) { 
+    if (!historicoEmprestimos.containsKey(nome)){
       print('Id inválido inserido');
       return;
     }
 
-    var emprestimo = historicoEmprestimos[IdEmp]!;
+    var emprestimo = historicoEmprestimos[nome]!;
 
+    print('\nDevolução do item: $titulo: ');
+    print('Detalhes da revista: \n');
     print(exibirDetalhes());
+
+    print('-----------------------\n');
     
     DateTime dataDevol = simulacao ?? DateTime.now();
 
     if (dataDevol.isAfter(emprestimo.dataPrazoFinal)){
       Duration diferenca = emprestimo.dataRetirada.difference(dataDevol);
 
-      int dias = diferenca.inDays;
+      int dias = diferenca.inDays.abs();
 
       print('A data de devolução superou o prazo original em $dias dias');
       double multa = dias * 2.5;
@@ -167,9 +183,11 @@ Mês de publicação: $mesPublicacao
 
     print('O prazo de devolução está em dia.');
     int total = 15;
-    print('Valor total devido: $total');
+    print('Valor total devido: $total\n');
+    print('-----------------------\n');
 
     quantidadeEstoque++;
+    historicoEmprestimos.remove(nome);
 
     return;
   }
@@ -177,10 +195,11 @@ Mês de publicação: $mesPublicacao
 
 void main() {
   var livro1 = Livro('Luiz', 123123, 'Entrega Asimov', 2025 , 5);
+  livro1.emprestar('Luiz Henrique Ferraz Amaro');
+  DateTime simulacao = DateTime.now().add(Duration(days: 10));
+  livro1.devolver('Luiz Henrique Ferraz Amaro', simulacao);
 
-  String text = livro1.exibirDetalhes();
-
-  var emprestar = livro1.emprestar();
-
-  livro1.devolver(emprestar, null);
+  var revista1 = Revista(1, 'Setembro', 'Revista Veja', 2024, 2);
+  revista1.emprestar('Luiz Henrique Ferraz Amaro');
+  revista1.devolver('Luiz Henrique Ferraz Amaro', null);
 }
