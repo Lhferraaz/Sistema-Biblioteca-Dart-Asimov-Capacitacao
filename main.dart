@@ -1,23 +1,28 @@
-// Sistema de biblioteca para gerenciamento de livros e revistas - Asimov
-// Linguagem: Dart
 // Autor: Luiz Henrique Ferraz Amaro
-// Data: 03/12/2025
+// Data de criação: 03 / 12 / 2025
+// Descrição: Sistema de Biblioteca em Dart - Validação de ISBN e gerenciamento de empréstimos
+// Capacitação da Asimov - Módulo Dart
 
+// Função para verificar a validade do ISBN-13
 bool verificaIsbn(List<int> isbn) {
+  // Verifica se o comprimento do ISBN é 13
   if (isbn.length != 13) return false;
 
   int soma = 0;
 
+  // Cálculo do dígito verificador
   for (int i = 0; i < 12; i++) {
     if (i.isEven) {
       soma += isbn[i];
-    }else {
+    } else {
       soma += isbn[i] * 3;
     }
   }
 
+  // Cálculo do dígito verificador esperado
   int digitoVerificador = (10 - (soma % 10)) % 10;
 
+  // Verifica se o dígito verificador calculado corresponde ao fornecido
   if (digitoVerificador == isbn[12]) {
     return true;
   }
@@ -25,7 +30,7 @@ bool verificaIsbn(List<int> isbn) {
   return false;
 }
 
-// Classe de Empréstimo
+// Classe para representar um empréstimo
 class Emprestimo {
   // Atributos
   String cliente;
@@ -34,95 +39,142 @@ class Emprestimo {
   DateTime? dataDevolucao;
   String status;
 
-  // Construtor + Validações
-  Emprestimo({required this.cliente, required this.dataRetirada, this.status = 'Ativo'}):
-    dataPrazoFinal = dataRetirada.add(Duration(days: 7));
+  // Construtor
+  Emprestimo({required this.cliente, required this.dataRetirada, this.status = 'Ativo'})
+      : dataPrazoFinal = dataRetirada.add(Duration(days: 7)) {
+        // Validações
+        if (cliente.isEmpty) {
+          throw Exception('Cliente não pode estar vazio!');
+        }
+      }
+
+  // Setters 
+  set setCliente(String v) {
+    if (v.isEmpty) throw Exception('Cliente inválido');
+    cliente = v;
+  }
+  
+  set setStatus(String v) {
+    if (v.isEmpty) throw Exception('Status inválido');
+    status = v;
+  }
+
+  set setDataDevolucao(DateTime? v) {
+    dataDevolucao = v;
+  }
 }
 
-// Classe Item
+// Classe abstrata para representar um item na biblioteca
 abstract class Item {
-  // Atributos da Super
+  // Atributos
   String titulo;
   int anoPublicacao;
   int quantidadeEstoque;
-  int id = 0;
-  Map <String, Emprestimo> historicoEmprestimos = {}; // Mapa para guardar empréstimos no tipo: id - data
+  Map<String, Emprestimo> historicoEmprestimos = {};
 
-  // Construtor + validações
-  Item(this.titulo, this.anoPublicacao, this.quantidadeEstoque):
-    assert(quantidadeEstoque >= 0, 'Quantidade em estoque deve ser menor ou igul a 0'),
-    assert(titulo.isNotEmpty, 'O Título não pode ser vazio'),
-    assert(anoPublicacao > 0 && anoPublicacao <= DateTime.now().year, 'Ano de publicação inválido') {
-      if (quantidadeEstoque <= 0) {
-        throw Exception('A quantidade não pode ser menor que 0!');
-      }
-
-      if (titulo.isEmpty) {
-        throw Exception('O Título não pode estar vazio!');
-      }
-
-      if (anoPublicacao <= 0 || anoPublicacao > DateTime.now().year) {
-        throw Exception('Ano de publicação inválido!');
-      }
+  // Construtor
+  Item(this.titulo, this.anoPublicacao, this.quantidadeEstoque)
+      // Validações
+      : assert(quantidadeEstoque >= 0, 'Quantidade em estoque deve ser menor ou igul a 0'),
+        assert(titulo.isNotEmpty, 'O Título não pode ser vazio'),
+        assert(anoPublicacao > 0 && anoPublicacao <= DateTime.now().year, 'Ano de publicação inválido') {
+    if (quantidadeEstoque <= 0) {
+      throw Exception('A quantidade não pode ser menor que 0!');
     }
 
-  // Método de empréstimo de livros
+    if (titulo.isEmpty) {
+      throw Exception('O Título não pode estar vazio!');
+    }
+
+    if (anoPublicacao <= 0 || anoPublicacao > DateTime.now().year) {
+      throw Exception('Ano de publicação inválido!');
+    }
+  }
+
+  // Setters
+  set setTitulo(String v) {
+    if (v.isEmpty) throw Exception('Título inválido');
+    titulo = v;
+  }
+
+  set setAnoPublicacao(int v) {
+    if (v <= 0 || v > DateTime.now().year) throw Exception('Ano inválido');
+    anoPublicacao = v;
+  }
+
+  set setQuantidadeEstoque(int v) {
+    if (v < 0) throw Exception('Quantidade inválida');
+    quantidadeEstoque = v;
+  }
+
+  set setId(int v) {
+    if (v < 0) throw Exception('Id inválido');
+    id = v;
+  }
+
+  set setHistorico(Map<String, Emprestimo> v) {
+    historicoEmprestimos = v;
+  }
+  // Função de empréstimo
   void emprestar(String nome) {
-    // Validação com exception
+    // Quantidade em estoque deve ser maior que 0
     if (quantidadeEstoque <= 0) {
       throw Exception('Empréstimo indisponível. Não há cópias em estoque');
     }
 
-    if (nome.isEmpty){
+    // Nome do cliente não pode estar vazio
+    if (nome.isEmpty) {
       throw Exception('Nome não pode estar vazio');
     }
 
-    // Decrementa a quantidade de cópias
+    // Realiza o empréstimo
     quantidadeEstoque--;
 
-    // Variáveis para criação do empréstimo
+    // Registra o empréstimo no histórico
     DateTime dataRetirada = DateTime.now();
 
-    // Esse bloco de código possuí o seguinte funcionamento:
-    // * Primeiro crio um novo objeto da classe Emprestimo.
-    // * Com o objeto da classe Emprestimo criada, pego o nome e adiciono ele
-    // como uma key no meu mapa de historico de empréstimos.
-    // * Depois atribuo a essa key o valor novoEmprestimo, assim cada nome corresponde
-    // corretamente ao emprestimo atrelado a ele.
-    // Isso facilita gerenciar cenários aonde mais de uma cópia do mesmo livro é
-    // emprestada. Também incremento o id, para que cada um seja único.
+    // Cria um novo objeto de empréstimo
     var novoEmprestimo = Emprestimo(cliente: nome, dataRetirada: dataRetirada);
-    id++;
     historicoEmprestimos[nome] = novoEmprestimo;
     print('\nEmpréstimo do item $titulo realizado com sucesso\n');
   }
-
-  
+  // Métodos abstratos
   String exibirDetalhes();
-
-  // Função de devolução, possuí uma variável que pode ser nula de simulacao 
-  // para que eu possa inserir uma data de teste.
-  // Método abstrato pois na listagem das informações, cada classe filha tem
-  // infos diferentes
   void devolver(String nome, DateTime? simulacao);
 }
 
+// Classe para representar um livro
 class Livro extends Item {
+  // Atributos
   String autor;
   List<int> isbn;
 
-  Livro(this.autor, this.isbn, super.titulo, super.anoPublicacao, super.quantidadeEstoque):
-    assert(autor.isNotEmpty, 'Autor não pode ser vazio') {
-      if (!verificaIsbn(isbn)) {
-        throw Exception('ISBN inválido inserido!');
-      }
-
-      if (autor.isEmpty) {
-        throw Exception('Autor não pode ser vazio! - Se for desconhecido, informe.');
-      }
+  // Construtor
+  Livro(this.autor, this.isbn, super.titulo, super.anoPublicacao, super.quantidadeEstoque)
+      // Validações
+      : assert(autor.isNotEmpty, 'Autor não pode ser vazio') {
+    if (!verificaIsbn(isbn)) {
+      throw Exception('ISBN inválido inserido!');
     }
 
-  String exibirDetalhes(){
+    if (autor.isEmpty) {
+      throw Exception('Autor não pode ser vazio! - Se for desconhecido, informe.');
+    }
+  }
+
+  // Setters
+  set setAutor(String v) {
+    if (v.isEmpty) throw Exception('Autor inválido');
+    autor = v;
+  }
+
+  set setIsbn(List<int> v) {
+    if (!verificaIsbn(v)) throw Exception('ISBN inválido');
+    isbn = v;
+  }
+
+  // Função que exibe os detalhes do livro
+  String exibirDetalhes() {
     String text = '''
 Título: $titulo
 Ano de publicação: $anoPublicacao
@@ -133,43 +185,57 @@ ISBN: ${isbn.join()}
     return text;
   }
 
-  void devolver(String nome, DateTime? simulacao) { 
-    if (!historicoEmprestimos.containsKey(nome)){
+  // Função de devolução - Possui uma variável de debug "simulacao" para validar
+  // cenários de atrasos.
+  void devolver(String nome, DateTime? simulacao) {
+    // O Mapa deve conter o nome informado
+    if (!historicoEmprestimos.containsKey(nome)) {
       print('Id inválido inserido');
       return;
     }
 
+    // Recupera o empréstimo do cliente
     var emprestimo = historicoEmprestimos[nome]!;
-    
+
+    // Exibe as informações do item devolvido
     print('Devolução do item:  $titulo: ');
     print('Detalhes da obra: \n');
     print(exibirDetalhes());
-
-    print('-----------------------\n');
     
+    print('-----------------------\n');
+
+    // Data de devolução, se simulacao for nula, usa a data atual
     DateTime dataDevol = simulacao ?? DateTime.now();
 
     print('Informações sobre pagamento: \n');
 
-    if (dataDevol.isAfter(emprestimo.dataPrazoFinal)){
+    // Verifica se a devolução está atrasada
+    if (dataDevol.isAfter(emprestimo.dataPrazoFinal)) {
+      // Calcula a diferença em dias
       Duration diferenca = emprestimo.dataPrazoFinal.difference(dataDevol);
 
+      // Calcula os dias de atraso
       int dias = diferenca.inDays.abs();
 
       print('A data de devolução superou o prazo original em $dias dias');
+      // Calcula a multa
       double multa = dias * 2.5;
       print('Valor da multa por atraso: $multa');
+      // Calcula o total devido
       double total = multa + 15;
       print('Valor total devido: $total\n');
       print('-----------------------\n');
       return;
     }
 
+    // Devolução dentro do prazo
     print('O prazo de devolução está em dia.');
+    // Valor fixo para devolução dentro do prazo
     int total = 15;
     print('Valor total devido: $total\n');
     print('-----------------------\n');
 
+    // Atualiza o estoque e remove o empréstimo do histórico
     quantidadeEstoque++;
     historicoEmprestimos.remove(nome);
 
@@ -177,22 +243,38 @@ ISBN: ${isbn.join()}
   }
 }
 
+// Classe para representar uma revista
 class Revista extends Item {
+  // Atributos
   int numExibicao;
   String mesPublicacao;
 
-  Revista(this.numExibicao, this.mesPublicacao, super.titulo, super.anoPublicacao, super.quantidadeEstoque):
-    assert(numExibicao > 0, 'Número de exibição deve ser maior que 0') {
-      if (numExibicao <= 0) {
-        throw Exception('Número de exibição inválido inserido!');
-      }
-
-      if (mesPublicacao.isEmpty) {
-        throw Exception('Mês de publicação não pode estar vazio!');
-      }
+  // Construtor
+  Revista(this.numExibicao, this.mesPublicacao, super.titulo, super.anoPublicacao, super.quantidadeEstoque)
+      // Validações
+      : assert(numExibicao > 0, 'Número de exibição deve ser maior que 0') {
+    if (numExibicao <= 0) {
+      throw Exception('Número de exibição inválido inserido!');
     }
 
-  String exibirDetalhes(){
+    if (mesPublicacao.isEmpty) {
+      throw Exception('Mês de publicação não pode estar vazio!');
+    }
+  }
+
+  // Setters
+  set setNumExibicao(int v) {
+    if (v <= 0) throw Exception('Número inválido');
+    numExibicao = v;
+  }
+
+  set setMesPublicacao(String v) {
+    if (v.isEmpty) throw Exception('Mês inválido');
+    mesPublicacao = v;
+  }
+
+  // Função que exibe os detalhes da revista
+  String exibirDetalhes() {
     String text = '''
 Título: $titulo
 Ano de publicação: $anoPublicacao
@@ -203,8 +285,11 @@ Mês de publicação: $mesPublicacao
     return text;
   }
 
-  void devolver(String nome, DateTime? simulacao) { 
-    if (!historicoEmprestimos.containsKey(nome)){
+  // Função de devolução - Possui uma variável de debug "simulacao" para validar
+  // cenários de atrasos.
+  // Funciona de forma semelhante à devolução do livro, mas com valores diferentes
+  void devolver(String nome, DateTime? simulacao) {
+    if (!historicoEmprestimos.containsKey(nome)) {
       print('Id inválido inserido');
       return;
     }
@@ -216,24 +301,24 @@ Mês de publicação: $mesPublicacao
     print(exibirDetalhes());
 
     print('-----------------------\n');
-    
+
     DateTime dataDevol = simulacao ?? DateTime.now();
 
-    if (dataDevol.isAfter(emprestimo.dataPrazoFinal)){
+    if (dataDevol.isAfter(emprestimo.dataPrazoFinal)) {
       Duration diferenca = emprestimo.dataRetirada.difference(dataDevol);
 
       int dias = diferenca.inDays.abs();
 
       print('A data de devolução superou o prazo original em $dias dias');
-      double multa = dias * 2.5;
+      double multa = dias * 1;
       print('Valor da multa por atraso: $multa');
-      double total = multa + 15;
+      double total = multa + 5;
       print('Valor total devido: $total');
       return;
     }
 
     print('O prazo de devolução está em dia.');
-    int total = 15;
+    int total = 5;
     print('Valor total devido: $total\n');
     print('-----------------------\n');
 
@@ -246,7 +331,7 @@ Mês de publicação: $mesPublicacao
 
 void main() {
   var isbnLivro1 = [9, 7, 8, 8, 5, 0, 3, 0, 0, 9, 9, 7, 3];
-  var livro1 = Livro('Luiz', isbnLivro1, 'Entrega Asimov', 2025 , 5);
+  var livro1 = Livro('Luiz', isbnLivro1, 'Entrega Asimov', 2025, 5);
 
   print(livro1.exibirDetalhes());
   print(verificaIsbn(isbnLivro1));
