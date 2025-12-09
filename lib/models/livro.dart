@@ -1,5 +1,5 @@
-import 'package:sistema_biblioteca/utils/isbn.dart';
-import 'package:sistema_biblioteca/models/item.dart';
+import '../utils/isbn.dart';
+import 'item.dart';
 
 class Livro extends Item {
   String autor;

@@ -1,4 +1,4 @@
-import 'package:sistema_biblioteca/models/item.dart';
+import 'item.dart';
 
 class Revista extends Item {
   int numExibicao;

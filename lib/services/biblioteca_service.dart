@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:sistema_biblioteca/models/item.dart';
-import 'package:sistema_biblioteca/models/livro.dart';
-import 'package:sistema_biblioteca/models/revista.dart';
+import '../models/item.dart';
+import '../models/livro.dart';
+import '../models/revista.dart';
 
 void listarItens(List<Item> biblioteca) {
   if (biblioteca.isEmpty) {
