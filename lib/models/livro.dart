@@ -14,8 +14,8 @@ class Livro extends Item {
     if (!verificaIsbn(isbn)) {
       throw Exception('ISBN inválido inserido!');
     }
-    if (autor.isEmpty) {
-      throw Exception('Autor não pode ser vazio! - Se for desconhecido, informe.');
+    if (autor.isEmpty || autor.length >= 60) {
+      throw Exception('Autor não pode ser vazio ou exceder 60 caracteres! - Se for desconhecido, informe.');
     }
   }
 
@@ -65,7 +65,7 @@ ISBN: ${isbn.join()}
     print('-----------------------\n');
 
     // Obtém a data de devolução (simulada ou atual)
-    DateTime dataDevol = emprestimo.dataPrazoFinal.add(Duration(days: 5)); // Simulação de atraso
+    DateTime dataDevol = simulacao ?? DateTime.now();
 
     print('Informações sobre pagamento: \n');
     

@@ -18,10 +18,10 @@ abstract class Item {
     if (quantidadeEstoque <= 0) {
       throw Exception('A quantidade não pode ser menor que 0!');
     }
-    if (titulo.isEmpty) {
-      throw Exception('O Título não pode estar vazio!');
+    if (titulo.isEmpty || titulo.length >= 100) {
+      throw Exception('O Título não pode estar vazio ou exceder 100 caracteres!');
     }
-    if (anoPublicacao <= 0 || anoPublicacao > DateTime.now().year) {
+    if (anoPublicacao <= 0 || anoPublicacao > DateTime.now().year || anoPublicacao.bitLength > 4) {
       throw Exception('Ano de publicação inválido!');
     }
   }
