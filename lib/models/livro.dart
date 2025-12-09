@@ -29,6 +29,7 @@ class Livro extends Item {
   @override
   String exibirDetalhes() {
     String text = '''
+Tipo: Livro
 Título: $titulo
 Ano de publicação: $anoPublicacao
 Autor: $autor

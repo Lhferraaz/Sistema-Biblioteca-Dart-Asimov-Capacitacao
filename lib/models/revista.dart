@@ -28,6 +28,7 @@ class Revista extends Item {
   @override
   String exibirDetalhes() {
     String text = '''
+Tipo: Revista
 Título: $titulo
 Ano de publicação: $anoPublicacao
 N° de exibição: $numExibicao
