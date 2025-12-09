@@ -224,3 +224,22 @@ void editarItem(List<Item> biblioteca, String titulo) {
     print('Atributo inválido.');
   }
 }
+
+void buscaItem(List<Item> biblioteca, String titulo) {
+  Item? item;
+
+  for (var i in biblioteca) {
+    if (i.titulo == titulo) {
+      item = i;
+      break;
+    }
+  }
+
+  if (item == null) {
+    print('Item não encontrado.\n');
+    return;
+  }
+
+  print('Detalhes do item encontrado:\n');
+  print(item.exibirDetalhes());
+}
