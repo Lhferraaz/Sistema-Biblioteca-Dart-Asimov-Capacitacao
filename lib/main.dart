@@ -66,6 +66,15 @@ void main() {
           print('Título inválido.');
         }
         break;
+      case '8':
+        stdout.write('Digite o título do item a ser buscado: ');
+        String? tituloBuscar = stdin.readLineSync();
+        if (tituloBuscar != null) {
+          buscaItem(biblioteca, tituloBuscar);
+        } else {
+          print('Título inválido.');
+        }
+        break;
       default:
       print('Opção inválida. Tente novamente.');
     }
