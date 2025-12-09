@@ -1,3 +1,5 @@
+import 'dart:html_common';
+
 import 'services/biblioteca_service.dart';
 import 'models/item.dart';
 import 'dart:io';
@@ -24,6 +26,9 @@ void main() {
 3. Emprestar item
 4. Devolver item
 5. Sair
+6. Remover Item
+7. Editar Item
+8. Buscar Item
 ''');
 
     stdout.write('Escolha: ');
@@ -45,6 +50,24 @@ void main() {
       case '5':
         print('Encerrando....');
         return;
+      case '6':
+        stdout.write('Digite o título do item a ser removido: ');
+        String? tituloRemover = stdin.readLineSync();
+        if (tituloRemover != null) {
+          removeItem(biblioteca, tituloRemover);
+        } else {
+          print('Título inválido.');
+        }
+        break;
+      case '7':
+        stdout.write('Digite o título do item a ser removido: ');
+        String? tituloRemover = stdin.readLineSync();
+        if (tituloRemover != null) {
+          removeItem(biblioteca, tituloRemover);
+        } else {
+          print('Título inválido.');
+        }
+        break;
       default:
       print('Opção inválida. Tente novamente.');
     }
