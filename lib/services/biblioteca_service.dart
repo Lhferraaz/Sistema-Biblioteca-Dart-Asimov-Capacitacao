@@ -242,6 +242,7 @@ void editarItem(List<Item> biblioteca, String titulo) {
 
 // Função para buscar um item pelo título
 void buscaItem(List<Item> biblioteca) {
+  // Solicita o critério de busca ao usuário
   print('''
 Deseja buscar por:
 1. Título
@@ -251,11 +252,13 @@ Deseja buscar por:
 5. Mês de publicação (apenas para revistas)
 ''');
   stdout.write('Escolha: ');
-    String? opc = stdin.readLineSync();
+  String? opc = stdin.readLineSync();
 
   Item? item;
 
+  // Processa a busca com base no critério escolhido
   switch(opc){
+    // Pesquisa por título
     case '1':
       stdout.write('Digite o título: ');
       String? titulo = stdin.readLineSync();
@@ -276,7 +279,7 @@ Deseja buscar por:
     case '2':
       stdout.write('Digite o ano de publicação: ');
       String? anoInput = stdin.readLineSync();
-      int anoBusca = int.parse(anoInput!);
+      int anoBusca = int.parse(anoInput!); // Converte a entrada para inteiro
       for (var i in biblioteca) {
         if (i.anoPublicacao == anoBusca) {
           print('Item encontrado:\n');
@@ -297,7 +300,7 @@ Deseja buscar por:
     case '4':
       stdout.write('Digite o número de exibição: ');
       String? numInput = stdin.readLineSync();
-      int numBusca = int.parse(numInput!);
+      int numBusca = int.parse(numInput!); // Converte a entrada para inteiro
       for (var i in biblioteca) {
         if (i is Revista && i.numExibicao == numBusca) {
           print('Item encontrado:\n');
