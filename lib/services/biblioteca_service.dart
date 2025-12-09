@@ -134,92 +134,93 @@ void editarItem(List<Item> biblioteca, String titulo) {
       item = i;
       break;
     }
+  }
 
-    if (item == null) {
-      print('Item não encontrado.\n');
+  
+  if (item == null) {
+    print('Item não encontrado.\n');
+    return;
+  }
+
+  stdout.write('Qual atributo deseja editar (escreva exatamente como está na listagem)? ');
+  String? atributo = stdin.readLineSync()?.trim();
+
+  if (atributo == null) {
+    print('Atributo inválido.');
+    return;
+  }
+
+  if (atributo == 'Título') {
+    stdout.write('Novo título: ');
+    String? novoTitulo = stdin.readLineSync();
+    item.setTitulo = novoTitulo!;
+    print('Título atualizado com sucesso.\n');
+  }
+
+  if (atributo == 'Ano de publicação') {
+    stdout.write('Novo ano de publicação: ');
+    int novoAno = int.parse(stdin.readLineSync()!);
+    item.setAno = novoAno;
+    print('Ano de publicação atualizado com sucesso.\n');
+  }
+
+  if (atributo == 'Quantidade em estoque') {
+    stdout.write('Nova quantidade em estoque: ');
+    int novaQtd = int.parse(stdin.readLineSync()!);
+    item.setQuantidade = novaQtd;
+    print('Quantidade em estoque atualizada com sucesso.\n');
+  }
+
+  if (atributo == 'Autor' && item is Livro) {
+    Item? item;
+
+    for (var i in biblioteca) {
+      if (i.titulo == titulo) {
+        item = i;
+        break;
+      }
+    }
+
+    if (item == null || item is! Livro) {
+      print('Livro não encontrado.\n');
       return;
     }
 
-    stdout.write('Qual atributo deseja editar (escreva exatamente como está na listagem)? ');
-    String? atributo = stdin.readLineSync()?.trim();
+    stdout.write('Novo autor: ');
+    String? novoAutor = stdin.readLineSync();
+    item.setAutor = novoAutor!;
+    print('Autor atualizado com sucesso.\n');
+  }
 
-    if (atributo == null) {
-      print('Atributo inválido.');
-      return;
-    }
+  if (atributo == 'ISBN') {
+    stdout.write('Novo ISBN (13 dígitos, sem espaços): ');
+    String? novoIsbnInput = stdin.readLineSync();
+    List<int> novoIsbn = novoIsbnInput!.split('').map(int.parse).toList();
+    (item as Livro).setIsbn = novoIsbn;
+    print('ISBN atualizado com sucesso.\n');
+  }
 
-    if (atributo == 'Título') {
-      stdout.write('Novo título: ');
-      String? novoTitulo = stdin.readLineSync();
-      item.setTitulo = novoTitulo!;
-      print('Título atualizado com sucesso.\n');
-    }
+  if (atributo == 'Número de exibição' && item is Revista) {
+    stdout.write('Novo número de exibição: ');
+    int novoNum = int.parse(stdin.readLineSync()!);
+    item.setNumExibicao = novoNum;
+    print('Número de exibição atualizado com sucesso.\n');
+  }
 
-    if (atributo == 'Ano de publicação') {
-      stdout.write('Novo ano de publicação: ');
-      int novoAno = int.parse(stdin.readLineSync()!);
-      item.setAno = novoAno;
-      print('Ano de publicação atualizado com sucesso.\n');
-    }
+  if (atributo == 'Mês de publicação' && item is Revista) {
+    stdout.write('Novo mês de publicação: ');
+    String? novoMes = stdin.readLineSync();
+    item.setMes = novoMes!;
+    print('Mês de publicação atualizado com sucesso.\n');
+  }
 
-    if (atributo == 'Quantidade em estoque') {
-      stdout.write('Nova quantidade em estoque: ');
-      int novaQtd = int.parse(stdin.readLineSync()!);
-      item.setQuantidade = novaQtd;
-      print('Quantidade em estoque atualizada com sucesso.\n');
-    }
-
-    if (atributo == 'Autor' && item is Livro) {
-      Item? item;
-
-      for (var i in biblioteca) {
-        if (i.titulo == titulo) {
-          item = i;
-          break;
-        }
-      }
-
-      if (item == null || item is! Livro) {
-        print('Livro não encontrado.\n');
-        return;
-      }
-
-      stdout.write('Novo autor: ');
-      String? novoAutor = stdin.readLineSync();
-      item.setAutor = novoAutor!;
-      print('Autor atualizado com sucesso.\n');
-    }
-
-    if (atributo == 'ISBN') {
-      stdout.write('Novo ISBN (13 dígitos, sem espaços): ');
-      String? novoIsbnInput = stdin.readLineSync();
-      List<int> novoIsbn = novoIsbnInput!.split('').map(int.parse).toList();
-      (item as Livro).setIsbn = novoIsbn;
-      print('ISBN atualizado com sucesso.\n');
-    }
-
-    if (atributo == 'Número de exibição' && item is Revista) {
-      stdout.write('Novo número de exibição: ');
-      int novoNum = int.parse(stdin.readLineSync()!);
-      item.setNumExibicao = novoNum;
-      print('Número de exibição atualizado com sucesso.\n');
-    }
-
-    if (atributo == 'Mês de publicação' && item is Revista) {
-      stdout.write('Novo mês de publicação: ');
-      String? novoMes = stdin.readLineSync();
-      item.setMes = novoMes!;
-      print('Mês de publicação atualizado com sucesso.\n');
-    }
-
-    if (atributo != 'Título' &&
-        atributo != 'Ano de publicação' &&
-        atributo != 'Quantidade em estoque' &&
-        !(atributo == 'Autor' && item is Livro) &&
-        !(atributo == 'ISBN' && item is Livro) &&
-        !(atributo == 'Número de exibição' && item is Revista) &&
-        !(atributo == 'Mês de publicação' && item is Revista)) {
-      print('Atributo inválido.');
-    }
+  if (atributo != 'Título' &&
+      atributo != 'Ano de publicação' &&
+      atributo != 'Quantidade em estoque' &&
+      !(atributo == 'Autor' && item is Livro) &&
+      !(atributo == 'ISBN' && item is Livro) &&
+      !(atributo == 'Número de exibição' && item is Revista) &&
+      !(atributo == 'Mês de publicação' && item is Revista)) {
+    print('Atributo inválido.');
   }
 }

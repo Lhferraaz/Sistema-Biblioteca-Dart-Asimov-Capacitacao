@@ -1,5 +1,3 @@
-import 'dart:html_common';
-
 import 'services/biblioteca_service.dart';
 import 'models/item.dart';
 import 'dart:io';
@@ -60,10 +58,10 @@ void main() {
         }
         break;
       case '7':
-        stdout.write('Digite o título do item a ser removido: ');
-        String? tituloRemover = stdin.readLineSync();
-        if (tituloRemover != null) {
-          removeItem(biblioteca, tituloRemover);
+        stdout.write('Digite o título do item a ser editado: ');
+        String? tituloEditar = stdin.readLineSync();
+        if (tituloEditar != null) {
+          editarItem(biblioteca, tituloEditar);
         } else {
           print('Título inválido.');
         }
