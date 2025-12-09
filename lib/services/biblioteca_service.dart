@@ -1,26 +1,33 @@
+// Imports
 import 'dart:io';
 import '../models/item.dart';
 import '../models/livro.dart';
 import '../models/revista.dart';
 
+// Função para listar todos os itens na biblioteca
 void listarItens(List<Item> biblioteca) {
+  // Verifica se a biblioteca está vazia
   if (biblioteca.isEmpty) {
     print('Nenhum item cadastrado.\n');
     return;
   }
 
+  // Exibe os detalhes de cada item
   for (var item in biblioteca) {
     print(item.exibirDetalhes());
     print('----------------------');
   }
 }
 
+// Função para inserir um novo item na biblioteca
 void insereItem(List<Item> biblioteca) {
   print('Inserção de novo item:');
 
+  // Solicita o tipo de item ao usuário
   stdout.write('Livro / Revista: ');
   String? tipo = stdin.readLineSync()?.trim();
 
+  // Processa a inserção com base no tipo
   switch (tipo) {
     case 'Livro':
       stdout.write('Título: ');
@@ -68,12 +75,15 @@ void insereItem(List<Item> biblioteca) {
   }
 }
 
+// Função para emprestar um item
 void emprestarItem(List<Item> biblioteca) {
+  // Solicita o título do item a ser emprestado
   stdout.write('Digite o título do item a ser emprestado: ');
   String? titulo = stdin.readLineSync()!;
 
   Item? item;
 
+  // Procura o item na biblioteca
   for (var i in biblioteca) {
     if (i.titulo == titulo) {
       item = i;
@@ -81,23 +91,29 @@ void emprestarItem(List<Item> biblioteca) {
     }
   }
 
+  // Verifica se o item foi encontrado
   if (item == null) {
     print('Item não encontrado.\n');
     return;
   }
 
+  // Solicita o nome do cliente
   stdout.write('Digite o nome do cliente: ');
   String? nomeCliente = stdin.readLineSync()!;
 
+  // Realiza o empréstimo
   item.emprestar(nomeCliente);
 }
 
+// Função para devolver um item
 void devolverItem(List<Item> biblioteca) {
+  // Solicita o título do item a ser devolvido
   stdout.write('Título do item a ser devolvido: ');
   String? titulo = stdin.readLineSync()!;
 
   Item? item;
 
+  // Procura o item na biblioteca
   for (var i in biblioteca) {
     if (i.titulo == titulo) {
       item = i;
@@ -105,23 +121,29 @@ void devolverItem(List<Item> biblioteca) {
     }
   }
 
+  // Verifica se o item foi encontrado
   if (item == null) {
     print('Item não encontrado.\n');
     return;
   }
 
+  // Solicita o nome do cliente
   stdout.write('Nome do cliente: ');
   String? nomeCliente = stdin.readLineSync()!;
-  
+
+  // Realiza a devolução
   item.devolver(nomeCliente, null);
 }
 
+// Função para remover um item da biblioteca
 void removeItem(List<Item> biblioteca, String titulo) {
+  // Verifica se o título é válido
   if (titulo.isEmpty) {
     print('Título inválido.');
     return;
   }
 
+  // Remove o item da biblioteca
   biblioteca.removeWhere((item) => item.titulo == titulo);
   print('Item removido com sucesso.\n');
 }
@@ -129,6 +151,7 @@ void removeItem(List<Item> biblioteca, String titulo) {
 void editarItem(List<Item> biblioteca, String titulo) {
   Item? item;
 
+  // Procura o item na biblioteca
   for (var i in biblioteca) {
     if (i.titulo == titulo) {
       item = i;
@@ -136,15 +159,18 @@ void editarItem(List<Item> biblioteca, String titulo) {
     }
   }
 
-  
+  // Verifica se o item foi encontrado
   if (item == null) {
     print('Item não encontrado.\n');
     return;
   }
 
+  // Solicita o atributo a ser editado
   stdout.write('Qual atributo deseja editar (escreva exatamente como está na listagem)? ');
   String? atributo = stdin.readLineSync()?.trim();
 
+
+  // Edita de acordo com o atributo escolhido
   if (atributo == null) {
     print('Atributo inválido.');
     return;
@@ -171,35 +197,23 @@ void editarItem(List<Item> biblioteca, String titulo) {
     print('Quantidade em estoque atualizada com sucesso.\n');
   }
 
+  // Verifica se o item é um Livro ou Revista para editar atributos específicos
+  // Essa lógica se repete para cada atributo específico
   if (atributo == 'Autor' && item is Livro) {
-    Item? item;
-
-    for (var i in biblioteca) {
-      if (i.titulo == titulo) {
-        item = i;
-        break;
-      }
-    }
-
-    if (item == null || item is! Livro) {
-      print('Livro não encontrado.\n');
-      return;
-    }
-
     stdout.write('Novo autor: ');
     String? novoAutor = stdin.readLineSync();
     item.setAutor = novoAutor!;
     print('Autor atualizado com sucesso.\n');
   }
 
-  if (atributo == 'ISBN') {
+  if (atributo == 'ISBN' && item is Livro) {
     stdout.write('Novo ISBN (13 dígitos, sem espaços): ');
     String? novoIsbnInput = stdin.readLineSync();
     List<int> novoIsbn = novoIsbnInput!.split('').map(int.parse).toList();
-    (item as Livro).setIsbn = novoIsbn;
+    item.setIsbn = novoIsbn;
     print('ISBN atualizado com sucesso.\n');
   }
-
+  
   if (atributo == 'Número de exibição' && item is Revista) {
     stdout.write('Novo número de exibição: ');
     int novoNum = int.parse(stdin.readLineSync()!);
@@ -214,6 +228,7 @@ void editarItem(List<Item> biblioteca, String titulo) {
     print('Mês de publicação atualizado com sucesso.\n');
   }
 
+  // Validação de atributo inválido
   if (atributo != 'Título' &&
       atributo != 'Ano de publicação' &&
       atributo != 'Quantidade em estoque' &&
@@ -225,9 +240,11 @@ void editarItem(List<Item> biblioteca, String titulo) {
   }
 }
 
+// Função para buscar um item pelo título
 void buscaItem(List<Item> biblioteca, String titulo) {
   Item? item;
-
+  
+  // Procura o item na biblioteca
   for (var i in biblioteca) {
     if (i.titulo == titulo) {
       item = i;
@@ -235,11 +252,13 @@ void buscaItem(List<Item> biblioteca, String titulo) {
     }
   }
 
+  // Verifica se o item foi encontrado
   if (item == null) {
     print('Item não encontrado.\n');
     return;
   }
 
+  // Exibe os detalhes do item encontrado
   print('Detalhes do item encontrado:\n');
   print(item.exibirDetalhes());
 }

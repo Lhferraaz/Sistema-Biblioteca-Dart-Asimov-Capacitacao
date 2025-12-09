@@ -1,3 +1,11 @@
+// Autor: Luiz Henrique Ferraz Amaro
+// Curso: Sistemas de Informação
+// Instituição: Universidade Federal de Itajubá
+// Descrição: Sistema de Biblioteca em Dart - AsiBiblioteca
+// Data de início: 03/12/2025
+// Capacitação Mobile Asimov Jr
+
+// Imports
 import 'services/biblioteca_service.dart';
 import 'models/item.dart';
 import 'dart:io';
@@ -5,6 +13,7 @@ import 'models/livro.dart';
 import 'models/revista.dart';
 
 void main() {
+  // Inicialização da biblioteca com alguns itens
   List <Item> biblioteca = [];
 
   var livro1 = Livro('George Orwell', [9,7,8,8,5,0,3,0,0,9,9,7,3], '1984', 1949, 5);
@@ -16,6 +25,7 @@ void main() {
 
   biblioteca.addAll([livro1, revista1, livro2, revista2, livro3, revista3]);
 
+  // Loop principal do sistema
   while (true) {
     print('''
 === Sistema da AsiBiblioteca ===
@@ -28,7 +38,7 @@ void main() {
 7. Editar Item
 8. Buscar Item
 ''');
-
+    // Leitura da opção do usuário
     stdout.write('Escolha: ');
     String? opc = stdin.readLineSync();
 

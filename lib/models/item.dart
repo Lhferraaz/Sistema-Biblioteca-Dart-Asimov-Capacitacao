@@ -1,13 +1,16 @@
-import 'emprestimo.dart';
+import 'emprestimo.dart'; // Importa a classe Emprestimo
 
+// Classe abstrata para representar um item genérico na biblioteca
 abstract class Item {
+  // Atributos comuns a todos os itens
   String titulo;
   int anoPublicacao;
   int quantidadeEstoque;
-  int id = 0;
 
+  // Mapa para armazenar o histórico de empréstimos, associando o nome do cliente ao empréstimo correspondente
   Map<String, Emprestimo> historicoEmprestimos = {};
 
+  // Construtor + Validações
   Item(this.titulo, this.anoPublicacao, this.quantidadeEstoque)
       : assert(quantidadeEstoque >= 0, 'Quantidade em estoque deve ser menor ou igul a 0'),
         assert(titulo.isNotEmpty, 'O Título não pode ser vazio'),
@@ -41,24 +44,29 @@ abstract class Item {
     quantidadeEstoque = qtd;
   }
 
+  // Método para emprestar o item
   void emprestar(String nome) {
+    // Validação de disponibilidade e nome
     if (quantidadeEstoque <= 0) {
       throw Exception('Empréstimo indisponível. Não há cópias em estoque');
     }
+    // Validação do nome do cliente
     if (nome.isEmpty) {
       throw Exception('Nome não pode estar vazio');
     }
 
+    // Decrementa a quantidade em estoque e cria um novo empréstimo
     quantidadeEstoque--;
     DateTime dataRetirada = DateTime.now();
 
     var novoEmprestimo = Emprestimo(cliente: nome, dataRetirada: dataRetirada);
-    id++;
+    // Adiciona o empréstimo ao histórico
     historicoEmprestimos[nome] = novoEmprestimo;
 
     print('\nEmpréstimo do item $titulo realizado com sucesso\n');
   }
 
+  // Métodos abstratos para serem implementados nas subclasses
   String exibirDetalhes();
   void devolver(String nome, DateTime? simulacao);
 }
