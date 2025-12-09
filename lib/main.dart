@@ -22,8 +22,9 @@ void main() {
   var revista2 = Revista(85, 'Julho', 'Revista de Tecnologia', 2021, 2);
   var livro3 = Livro('J.R.R. Tolkien', [9,7,8,8,5,6,4,3,6,5,0,9,4], 'O Senhor dos Anéis', 1954, 6);
   var revista3 = Revista(200, 'Dezembro', 'Revista de Literatura', 2023, 1);
+  var livro4 = Livro('Asimov', [9,7,8,8,5,0,3,0,0,9,9,7,3], 'Fundação', 1949, 7);
 
-  biblioteca.addAll([livro1, revista1, livro2, revista2, livro3, revista3]);
+  biblioteca.addAll([livro1, revista1, livro2, revista2, livro3, revista3, livro4]);
 
   // Loop principal do sistema
   while (true) {
@@ -77,13 +78,7 @@ void main() {
         }
         break;
       case '8':
-        stdout.write('Digite o título do item a ser buscado: ');
-        String? tituloBuscar = stdin.readLineSync();
-        if (tituloBuscar != null) {
-          buscaItem(biblioteca, tituloBuscar);
-        } else {
-          print('Título inválido.');
-        }
+        buscaItem(biblioteca);
         break;
       default:
       print('Opção inválida. Tente novamente.');

@@ -241,24 +241,81 @@ void editarItem(List<Item> biblioteca, String titulo) {
 }
 
 // Função para buscar um item pelo título
-void buscaItem(List<Item> biblioteca, String titulo) {
+void buscaItem(List<Item> biblioteca) {
+  print('''
+Deseja buscar por:
+1. Título
+2. Ano de publicação
+3. Autor (apenas para livros)
+4. Número de exibição (apenas para revistas)
+5. Mês de publicação (apenas para revistas)
+''');
+  stdout.write('Escolha: ');
+    String? opc = stdin.readLineSync();
+
   Item? item;
-  
-  // Procura o item na biblioteca
-  for (var i in biblioteca) {
-    if (i.titulo == titulo) {
-      item = i;
+
+  switch(opc){
+    case '1':
+      stdout.write('Digite o título: ');
+      String? titulo = stdin.readLineSync();
+      for (var i in biblioteca) {
+        if (i.titulo == titulo) {
+          item = i;
+          break;
+        }
+      }
+
+      if (item != null) {
+        print('Item encontrado:\n');
+        print(item.exibirDetalhes());
+      } else {
+        print('Item não encontrado.\n');
+      }
       break;
-    }
+    case '2':
+      stdout.write('Digite o ano de publicação: ');
+      String? anoInput = stdin.readLineSync();
+      int anoBusca = int.parse(anoInput!);
+      for (var i in biblioteca) {
+        if (i.anoPublicacao == anoBusca) {
+          print('Item encontrado:\n');
+          print(i.exibirDetalhes());
+        }
+      }
+      break;
+    case '3':
+      stdout.write('Digite o autor: ');
+      String? autorBusca = stdin.readLineSync();
+      for (var i in biblioteca) {
+        if (i is Livro && i.autor == autorBusca) {
+          print('Item encontrado:\n');
+          print(i.exibirDetalhes());
+        }
+      }
+      break;
+    case '4':
+      stdout.write('Digite o número de exibição: ');
+      String? numInput = stdin.readLineSync();
+      int numBusca = int.parse(numInput!);
+      for (var i in biblioteca) {
+        if (i is Revista && i.numExibicao == numBusca) {
+          print('Item encontrado:\n');
+          print(i.exibirDetalhes());
+        }
+      }
+      break;
+    case '5':
+      stdout.write('Digite o mês de publicação: ');
+      String? mesBusca = stdin.readLineSync();
+      for (var i in biblioteca) {
+        if (i is Revista && i.mesPublicacao == mesBusca) {
+          print('Item encontrado:\n');
+          print(i.exibirDetalhes());
+        }
+      }
+      break;
+    default:
+      print('Opção inválida.');
   }
-
-  // Verifica se o item foi encontrado
-  if (item == null) {
-    print('Item não encontrado.\n');
-    return;
-  }
-
-  // Exibe os detalhes do item encontrado
-  print('Detalhes do item encontrado:\n');
-  print(item.exibirDetalhes());
 }
