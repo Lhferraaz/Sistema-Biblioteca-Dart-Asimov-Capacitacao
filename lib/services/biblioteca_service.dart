@@ -146,7 +146,7 @@ void removeItem(List<Item> biblioteca, String titulo) {
   stdout.write('Tem certeza que deseja remover o item "$titulo"? (s/n): ');
   String? confirmacao = stdin.readLineSync();
 
-  if (confirmacao?.toLowerCase() != 'n') {
+  if (confirmacao!.toLowerCase() != 's') {
     print('Remoção cancelada.\n');
     return;
   }

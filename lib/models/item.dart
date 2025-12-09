@@ -21,7 +21,7 @@ abstract class Item {
     if (titulo.isEmpty || titulo.length >= 100) {
       throw Exception('O Título não pode estar vazio ou exceder 100 caracteres!');
     }
-    if (anoPublicacao <= 0 || anoPublicacao > DateTime.now().year || anoPublicacao.bitLength > 4) {
+    if (anoPublicacao <= 0 || anoPublicacao > DateTime.now().year) {
       throw Exception('Ano de publicação inválido!');
     }
   }
