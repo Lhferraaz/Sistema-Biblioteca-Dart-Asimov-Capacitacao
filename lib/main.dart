@@ -15,7 +15,7 @@ void main() {
 5. Sair
 ''');
 
-    stdout.write('Escola: ');
+    stdout.write('Escolha: ');
     String? opc = stdin.readLineSync();
 
     switch(opc) {
