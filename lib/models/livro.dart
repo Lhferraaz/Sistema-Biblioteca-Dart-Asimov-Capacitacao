@@ -65,7 +65,7 @@ ISBN: ${isbn.join()}
     print('-----------------------\n');
 
     // Obtém a data de devolução (simulada ou atual)
-    DateTime dataDevol = simulacao ?? DateTime.now();
+    DateTime dataDevol = emprestimo.dataPrazoFinal.add(Duration(days: 5)); // Simulação de atraso
 
     print('Informações sobre pagamento: \n');
     
