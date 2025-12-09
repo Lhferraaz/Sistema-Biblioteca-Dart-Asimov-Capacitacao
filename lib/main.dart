@@ -34,10 +34,10 @@ void main() {
 2. Inserir item
 3. Emprestar item
 4. Devolver item
-5. Sair
-6. Remover Item
-7. Editar Item
-8. Buscar Item
+5. Remover item
+6. Editar Item
+7. Buscar Item
+8. Sair
 ''');
     // Leitura da opção do usuário
     stdout.write('Escolha: ');
@@ -57,9 +57,6 @@ void main() {
         devolverItem(biblioteca);
         break;
       case '5':
-        print('Encerrando....');
-        return;
-      case '6':
         stdout.write('Digite o título do item a ser removido: ');
         String? tituloRemover = stdin.readLineSync();
         if (tituloRemover != null) {
@@ -68,7 +65,7 @@ void main() {
           print('Título inválido.');
         }
         break;
-      case '7':
+      case '6':
         stdout.write('Digite o título do item a ser editado: ');
         String? tituloEditar = stdin.readLineSync();
         if (tituloEditar != null) {
@@ -77,9 +74,12 @@ void main() {
           print('Título inválido.');
         }
         break;
-      case '8':
+      case '7':
         buscaItem(biblioteca);
         break;
+      case '8':
+        print('Encerrando....');
+        return;
       default:
       print('Opção inválida. Tente novamente.');
     }
