@@ -143,6 +143,14 @@ void removeItem(List<Item> biblioteca, String titulo) {
     return;
   }
 
+  stdout.write('Tem certeza que deseja remover o item "$titulo"? (s/n): ');
+  String? confirmacao = stdin.readLineSync();
+
+  if (confirmacao?.toLowerCase() != 'n') {
+    print('Remoção cancelada.\n');
+    return;
+  }
+
   // Remove o item da biblioteca
   biblioteca.removeWhere((item) => item.titulo == titulo);
   print('Item removido com sucesso.\n');
