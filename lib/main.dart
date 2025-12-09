@@ -1,9 +1,20 @@
 import 'services/biblioteca_service.dart';
 import 'models/item.dart';
 import 'dart:io';
+import 'models/livro.dart';
+import 'models/revista.dart';
 
 void main() {
   List <Item> biblioteca = [];
+
+  var livro1 = Livro('George Orwell', [9,7,8,8,5,0,3,0,0,9,9,7,3], '1984', 1949, 5);
+  var revista1 = Revista(120, 'Março', 'Revista Científica', 2022, 3);
+  var livro2 = Livro('J.K. Rowling', [9,7,8,8,5,6,4,3,6,5,0,7,0], 'Harry Potter e a Pedra Filosofal', 1997, 4);
+  var revista2 = Revista(85, 'Julho', 'Revista de Tecnologia', 2021, 2);
+  var livro3 = Livro('J.R.R. Tolkien', [9,7,8,8,5,6,4,3,6,5,0,9,4], 'O Senhor dos Anéis', 1954, 6);
+  var revista3 = Revista(200, 'Dezembro', 'Revista de Literatura', 2023, 1);
+
+  biblioteca.addAll([livro1, revista1, livro2, revista2, livro3, revista3]);
 
   while (true) {
     print('''
